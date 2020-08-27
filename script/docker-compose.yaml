@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  docker-registry:
+    image: registry:2
+    container_name: docker-registry
+    ports:
+      - 5000:5000
+    volumes:
+      - type: bind
+        source: ${PWD}/store/registry-data
+        target: /var/lib/registry
+    restart: always
+  docker-registry-ui:
+    image: konradkleine/docker-registry-frontend:v2
+    container_name: docker-registry-ui
+    ports:
+      - 10001:80
+    depends_on:
+      - docker-registry
+    environment:
+      - ENV_DOCKER_REGISTRY_HOST=docker-registry
+      - ENV_DOCKER_REGISTRY_PORT=5000
+      - ENV_DEFAULT_REPOSITORIES_PER_PAGE=10
